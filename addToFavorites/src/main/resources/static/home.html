@@ -2,18 +2,69 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>BookmarkRgister</title>
+    <title>BookmarkRegister</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;  /* 위에서 아래로 배치 */
+            justify-content: center; /* 세로 중앙 */
+            align-items: center;     /* 가로 중앙 */
+            min-height: 100vh;       /* 화면 전체 높이 */
+            margin: 0;               /* 여백 제거 */
+        }
+        form {
+            display: flex;          /* 입력칸 그룹 + 버튼 가로 배치 */
+            align-items: stretch;   /* 높이 동일 */
+            gap: 10px;              /* 입력칸과 버튼 사이 간격 */
+            margin-bottom: 15px;
+        }
+        .form-fields {
+            display: flex;
+            flex-direction: column; /* 이름 / URL 세로 배치 */
+            gap: 10px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;    /* 라벨과 입력칸 같은 줄 */
+        }
+        label {
+            display: inline-block;
+            width: 120px;           /* 라벨 고정 폭 */
+        }
+        input[type="text"] {
+            width: 250px;
+        }
+        input[type="submit"] {
+            width: 100px;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <form onsubmit="return addBookmarkRequest();">
-    <label>즐겨찾기 이름 : </label><input type="text" name="name"><br>
-    <label>즐겨찾기 URL : </label><input type="text" name="url"><br>
-    <input type="submit"><br>
+    <div class="form-fields">
+        <div class="form-group">
+            <label for="name">즐겨찾기 이름</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="form-group">
+            <label for="url">URL</label>
+            <input type="text" id="url" name="url">
+        </div>
+    </div>
+    <!-- 입력칸 두 줄 높이에 맞춘 제출 버튼 -->
+    <input type="submit" value="등록">
 </form>
 
 <button onclick="getBookmarkListRequest();">즐겨찾기 목록 가져오기</button>
 <ol id="bookmark-list">
-    <!--여기에 즐겨찾기 목록 나옵니다.-->
+    <!-- 여기에 즐겨찾기 목록 나옵니다. -->
 </ol>
 
 <script>
