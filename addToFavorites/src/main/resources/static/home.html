@@ -107,17 +107,26 @@
                     const bookmarkList = JSON.parse(currentAjaxRequest.responseText);
                     bookmarkList.forEach(bookmark => {
                         const liNode = document.createElement('li');
+
                         //이름 - URL 텍스트
                         const textNode = document.createTextNode(bookmark.name + ' - ' + bookmark.url);
+
                         //바로가기 링크
                         const aNode = document.createElement('a');
                         aNode.href = bookmark.url;
                         aNode.textContent = "<바로가기>";
                         aNode.target = "_blank";
+
                         //삭제 버튼
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = "삭제";
                         deleteButton.onclick = () => deleteBookmark(bookmark.id);
+
+                        //수정 버튼
+                        const editButton = document.createElement('button');
+                        editButton.textContent = "수정";
+                        editButton.onclick = () => editBookmark(bookmark.id);
+                        liNode.appendChild(editButton);
 
 
                         liNode.appendChild(textNode);
@@ -144,7 +153,7 @@
     if (!(url.startsWith("http://") || url.startsWith("https://")))
         return "https://" + url;
     else if(url.startsWith("http://"))
-        return "https://" + url;
+        return url.replace("http://", "https://");
 
     return url;
     }
@@ -161,6 +170,34 @@
         }
     };
     ajaxRequest.send();
+}
+
+    function editBookmark(id) {
+    const newName = prompt("새 이름을 입력하세요:");
+    const newUrl = prompt("새 URL을 입력하세요:");
+
+    if (!newName || !newUrl) {
+        alert("값을 입력해야 합니다!");
+        return;
+    }
+
+    const normalizedUrl = normalizeUrl(newUrl);
+
+    const requestObject = { name: newName, url: normalizedUrl };
+    const requestJson = JSON.stringify(requestObject);
+
+    const ajaxRequest = new XMLHttpRequest();
+    ajaxRequest.open('PUT', '/bookmark/' + id);
+    ajaxRequest.setRequestHeader('Content-Type', 'application/json');
+    ajaxRequest.onload = function() {
+        if (ajaxRequest.status === 200) {
+            alert("수정 성공!");
+            getBookmarkListRequest(); // 목록 새로고침
+        } else {
+            console.error("수정 실패");
+        }
+    };
+    ajaxRequest.send(requestJson);
 }
 
 

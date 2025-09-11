@@ -36,4 +36,22 @@ public class BookmarkAjaxController {
         bookmarkRepository.deleteById(id);   // DB에서 삭제
         return ResponseEntity.ok().build();
     }
+
+    //수정
+    @PutMapping("/bookmark/{id}")
+    public ResponseEntity<Bookmark> updateBookmark(@PathVariable Long id,
+                                                   @RequestBody Bookmark updatedBookmark) {
+        return bookmarkRepository.findById(id)
+                .map(bookmark -> {
+                    bookmark.setName(updatedBookmark.getName());
+                    bookmark.setUrl(updatedBookmark.getUrl());
+                    Bookmark saved = bookmarkRepository.save(bookmark);
+                    return ResponseEntity.ok(saved);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+
+
 }
