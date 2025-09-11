@@ -107,15 +107,23 @@
                     const bookmarkList = JSON.parse(currentAjaxRequest.responseText);
                     bookmarkList.forEach(bookmark => {
                         const liNode = document.createElement('li');
+                        //이름 - URL 텍스트
                         const textNode = document.createTextNode(bookmark.name + ' - ' + bookmark.url);
-
+                        //바로가기 링크
                         const aNode = document.createElement('a');
                         aNode.href = bookmark.url;
                         aNode.textContent = "<바로가기>";
                         aNode.target = "_blank";
+                        //삭제 버튼
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = "삭제";
+                        deleteButton.onclick = () => deleteBookmark(bookmark.id);
+
 
                         liNode.appendChild(textNode);
                         liNode.appendChild(aNode);
+                        liNode.appendChild(deleteButton);
+
                         bookmarkListDom.appendChild(liNode);
 
 
@@ -140,6 +148,21 @@
 
     return url;
     }
+
+    function deleteBookmark(id) {
+    const ajaxRequest = new XMLHttpRequest();
+    ajaxRequest.open('DELETE', '/bookmark/' + id);
+    ajaxRequest.onload = function() {
+        if (ajaxRequest.status === 200) {
+            alert("삭제 성공!");
+            getBookmarkListRequest();
+        } else {
+            console.error("삭제 실패");
+        }
+    };
+    ajaxRequest.send();
+}
+
 
 </script>
 </body>

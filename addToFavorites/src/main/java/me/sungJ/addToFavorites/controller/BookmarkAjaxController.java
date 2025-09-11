@@ -1,27 +1,39 @@
 package me.sungJ.addToFavorites.controller;
 
 import me.sungJ.addToFavorites.domain.Bookmark;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import me.sungJ.addToFavorites.repository.BookmarkRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class BookmarkAjaxController {
 
-    private List<Bookmark> bookmarkList = new ArrayList<>();
+    private final BookmarkRepository bookmarkRepository;
 
-    @RequestMapping(method = RequestMethod.POST, path= "/bookmark")
+    // 생성자 주입
+    public BookmarkAjaxController(BookmarkRepository bookmarkRepository) {
+        this.bookmarkRepository = bookmarkRepository;
+    }
+
+    // 등록, DB 저장
+    @PostMapping("/bookmark")
     public String registerBookmark(@RequestBody Bookmark bookmark) {
-        bookmarkList.add(bookmark);
+        bookmarkRepository.save(bookmark);   // DB에 저장
         return "등록되었습니다.";
     }
 
-    @RequestMapping(method = RequestMethod.GET, path="/bookmarkList")
+    // 조회, DB에서 가져오기
+    @GetMapping("/bookmarkList")
     public List<Bookmark> getBookmarkList() {
-        return bookmarkList;
+        return bookmarkRepository.findAll(); // DB에서 조회
+    }
+
+    // 삭제, DB에서 삭제
+    @DeleteMapping("/bookmark/{id}")
+    public ResponseEntity<Void> deleteBookmark(@PathVariable Long id) {
+        bookmarkRepository.deleteById(id);   // DB에서 삭제
+        return ResponseEntity.ok().build();
     }
 }
